@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>jQuery Simple Fade Slide</title>
+    <link rel="stylesheet" type="text/css" href="demoStyleSheet.css" />
+    <script type="text/javascript" src="http://libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
+    <script type="text/javascript" src="src/fadeSlide.js"></script>
+    <script type="text/javascript">
+      jQuery(document).ready(function(){
+        jQuery('#slideshow').fadeSlide({height: 533});
+      });
+    </script>
+    <style type="text/css">
+      ul {
+        margin: 0;
+        padding: 0;
+      }
+      ul li {
+        list-style: none;
+      }
+    </style>
+  </head>
+<body>
+
+<div id="slideshowWrapper">
+    <ul id="slideshow">
+        <li><img src="images/1.jpeg" />1</li>
+        <li><img src="images/2.jpeg" />2</li>
+        <li><img src="images/3.jpeg" />3</li>
+    </ul>
+</div>
+
+</body>
+</html>
