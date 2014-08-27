@@ -8,23 +8,30 @@ $.fn.fadeSlide = (options) ->
       autoplay: true
       navigation: true
       navigationText : ["<", ">"]
-
+      navigationClass: 'fs-navigation'
+      NextId: 'fsNext'
+      PrevId: 'fsPrev'
+      pagination: true
+      paginationNumbers: true
+      controlClass: 'fs-control'
+      ListClass: 'fs-list'
+      listLiActiveClass: 'fs-active'
+      listLiClass: 'fs-li'
     }, options
 
     jQslides = $('> *', this)
 
-    $(this).css {
+    $(this).css
       width: settings.width,
       height: settings.height,
       position: 'relative'
-    }
 
-    jQslides.css {
+    jQslides.css
       position: 'absolute'
       display: 'none'
       width: settings.width,
       height: settings.height
-    }
+
     jQslides.eq(0).css display: 'block'
 
     curNum = 0
@@ -32,32 +39,53 @@ $.fn.fadeSlide = (options) ->
 
     autoplay = ->
       intval = setInterval ->
-        jumoTo ++curNum
+        jumpTo ++curNum
       , settings.interval
 
     stopAutoplay = ->
       clearInterval intval
       intval = false
 
-    jumoTo = (newIndex) ->
+    jumpTo = (newIndex) ->
       newIndex = jQslides.length-1 if newIndex < 0 
       newIndex = 0 if newIndex > jQslides.length-1
       curNum = newIndex
       jQslides.fadeOut settings.speed
       jQslides.eq(newIndex).fadeIn settings.speed
+      if settings.pagination
+        $(".#{settings.ListClass} li").removeClass settings.listLiActiveClass
+        $(".#{settings.ListClass} li").eq(curNum).addClass settings.listLiActiveClass
 
     if settings.navigation
-      $(this).after "<a href='javascript:' id='fsNext' class='fs-control fs-navigation'>#{settings.navigationText[1]}</a>"
-      $(this).after "<a href='javascript:' id='fsPrev' class='fs-control fs-navigation'>#{settings.navigationText[0]}</a>"
+      $(this).after "<a href='javascript:' id='#{settings.NextId}' class='#{settings.controlClass} #{settings.navigationClass}'>#{settings.navigationText[1]}</a>"
+      $(this).after "<a href='javascript:' id='#{settings.PrevId}' class='#{settings.controlClass} #{settings.navigationClass}'>#{settings.navigationText[0]}</a>"
 
-      $('#fsNext').on "click", (e) ->
-        jumoTo ++curNum
-      $('#fsPrev').on "click", (e) ->
-        jumoTo --curNum
+      $("##{settings.NextId}").on "click", (e) ->
+        jumpTo ++curNum
+      $("##{settings.PrevId}").on "click", (e) ->
+        jumpTo --curNum
+
+    if settings.pagination
+      i = 0
+      li = ''
+      paginationNumber = ''
+      while i <=  jQslides.length-1
+        paginationNumber = i+1 if settings.paginationNumbers
+        if i is 0
+          li = "<li class='#{settings.listLiActiveClass} #{settings.listLiClass}''><a href='javascript:'>#{paginationNumber}</a></li>"
+        else
+          li = li + "<li class='#{settings.listLiClass}'><a href='javascript:'>#{paginationNumber}</a></li>"
+        i++
+      list = "<ul class='#{settings.controlClass} #{settings.ListClass}'>#{li}</ul>"
+      $(this).after list
+      $(".#{settings.ListClass} a").on "click", (e) ->
+        index = $(".#{settings.ListClass} a").index this
+        return if index is curNum
+        jumpTo index
 
     if settings.autoplay
       autoplay() 
-      $("##{this.id}, .fs-control").on 'mouseenter', -> stopAutoplay()
-      $("##{this.id}, .fs-control").on 'mouseleave', -> autoplay()
+      $("##{this.id}, .#{settings.controlClass}").on 'mouseenter', -> stopAutoplay()
+      $("##{this.id}, .#{settings.controlClass}").on 'mouseleave', -> autoplay()
 
       
