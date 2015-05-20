@@ -1,7 +1,7 @@
 (function() {
   $.fn.fadeSlide = function(options) {
     return this.each(function() {
-      var autoplay, curNum, i, intval, jQslides, jumpTo, li, list, paginationNumber, settings, stopAutoplay;
+      var autoplay, curNum, i, intval, jQslides, jumpTo, li, list, paginationNumber, parent, settings, stopAutoplay;
       settings = $.extend({
         width: 'auto',
         height: 480,
@@ -11,8 +11,8 @@
         navigation: true,
         navigationText: ["<", ">"],
         navigationClass: 'fs-navigation',
-        NextId: 'fsNext',
-        PrevId: 'fsPrev',
+        NextClass: 'fsNext',
+        PrevClass: 'fsPrev',
         pagination: true,
         paginationNumbers: true,
         controlClass: 'fs-control',
@@ -20,6 +20,7 @@
         listLiActiveClass: 'fs-active',
         listLiClass: 'fs-li'
       }, options);
+      parent = $(this).parent();
       jQslides = $('> *', this);
       $(this).css({
         width: settings.width,
@@ -57,17 +58,17 @@
         jQslides.fadeOut(settings.speed);
         jQslides.eq(newIndex).fadeIn(settings.speed);
         if (settings.pagination) {
-          $("." + settings.ListClass + " li").removeClass(settings.listLiActiveClass);
-          return $("." + settings.ListClass + " li").eq(curNum).addClass(settings.listLiActiveClass);
+          parent.find("." + settings.ListClass + " li").removeClass(settings.listLiActiveClass);
+          return parent.find("." + settings.ListClass + " li").eq(curNum).addClass(settings.listLiActiveClass);
         }
       };
       if (settings.navigation) {
-        $(this).after("<a href='javascript:' id='" + settings.NextId + "' class='" + settings.controlClass + " " + settings.navigationClass + "'>" + settings.navigationText[1] + "</a>");
-        $(this).after("<a href='javascript:' id='" + settings.PrevId + "' class='" + settings.controlClass + " " + settings.navigationClass + "'>" + settings.navigationText[0] + "</a>");
-        $("#" + settings.NextId).on("click", function(e) {
+        $(this).after("<a href='javascript:' class='" + settings.controlClass + " " + settings.navigationClass + " " + settings.NextClass + "'>" + settings.navigationText[1] + "</a>");
+        $(this).after("<a href='javascript:' class='" + settings.controlClass + " " + settings.navigationClass + " " + settings.PrevClass + "'>" + settings.navigationText[0] + "</a>");
+        parent.find("." + settings.NextClass).on("click", function() {
           return jumpTo(++curNum);
         });
-        $("#" + settings.PrevId).on("click", function(e) {
+        parent.find("." + settings.PrevClass).on("click", function() {
           return jumpTo(--curNum);
         });
       }
@@ -88,9 +89,9 @@
         }
         list = "<ul class='" + settings.controlClass + " " + settings.ListClass + "'>" + li + "</ul>";
         $(this).after(list);
-        $("." + settings.ListClass + " a").on("click", function(e) {
+        parent.find("." + settings.ListClass + " a").on("click", function(e) {
           var index;
-          index = $("." + settings.ListClass + " a").index(this);
+          index = parent.find("." + settings.ListClass + " a").index(this);
           if (index === curNum) {
             return;
           }
@@ -99,10 +100,10 @@
       }
       if (settings.autoplay) {
         autoplay();
-        $("#" + this.id + ", ." + settings.controlClass).on('mouseenter', function() {
+        parent.on('mouseenter', function() {
           return stopAutoplay();
         });
-        return $("#" + this.id + ", ." + settings.controlClass).on('mouseleave', function() {
+        return parent.on('mouseleave', function() {
           return autoplay();
         });
       }

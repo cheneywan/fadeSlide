@@ -9,8 +9,8 @@ $.fn.fadeSlide = (options) ->
       navigation: true
       navigationText : ["<", ">"]
       navigationClass: 'fs-navigation'
-      NextId: 'fsNext'
-      PrevId: 'fsPrev'
+      NextClass: 'fsNext'
+      PrevClass: 'fsPrev'
       pagination: true
       paginationNumbers: true
       controlClass: 'fs-control'
@@ -18,6 +18,8 @@ $.fn.fadeSlide = (options) ->
       listLiActiveClass: 'fs-active'
       listLiClass: 'fs-li'
     }, options
+
+    parent = $(this).parent()
 
     jQslides = $('> *', this)
 
@@ -53,16 +55,17 @@ $.fn.fadeSlide = (options) ->
       jQslides.fadeOut settings.speed
       jQslides.eq(newIndex).fadeIn settings.speed
       if settings.pagination
-        $(".#{settings.ListClass} li").removeClass settings.listLiActiveClass
-        $(".#{settings.ListClass} li").eq(curNum).addClass settings.listLiActiveClass
+        parent.find(".#{settings.ListClass} li").removeClass settings.listLiActiveClass
+        parent.find(".#{settings.ListClass} li").eq(curNum).addClass settings.listLiActiveClass
 
     if settings.navigation
-      $(this).after "<a href='javascript:' id='#{settings.NextId}' class='#{settings.controlClass} #{settings.navigationClass}'>#{settings.navigationText[1]}</a>"
-      $(this).after "<a href='javascript:' id='#{settings.PrevId}' class='#{settings.controlClass} #{settings.navigationClass}'>#{settings.navigationText[0]}</a>"
+      $(this).after "<a href='javascript:' class='#{settings.controlClass} #{settings.navigationClass} #{settings.NextClass}'>#{settings.navigationText[1]}</a>"
+      $(this).after "<a href='javascript:' class='#{settings.controlClass} #{settings.navigationClass} #{settings.PrevClass}'>#{settings.navigationText[0]}</a>"
 
-      $("##{settings.NextId}").on "click", (e) ->
+      parent.find(".#{settings.NextClass}").on "click", ->
         jumpTo ++curNum
-      $("##{settings.PrevId}").on "click", (e) ->
+
+      parent.find(".#{settings.PrevClass}").on "click", ->
         jumpTo --curNum
 
     if settings.pagination
@@ -78,14 +81,15 @@ $.fn.fadeSlide = (options) ->
         i++
       list = "<ul class='#{settings.controlClass} #{settings.ListClass}'>#{li}</ul>"
       $(this).after list
-      $(".#{settings.ListClass} a").on "click", (e) ->
-        index = $(".#{settings.ListClass} a").index this
+
+      parent.find(".#{settings.ListClass} a").on "click", (e) ->
+        index = parent.find(".#{settings.ListClass} a").index this
         return if index is curNum
         jumpTo index
 
     if settings.autoplay
       autoplay() 
-      $("##{this.id}, .#{settings.controlClass}").on 'mouseenter', -> stopAutoplay()
-      $("##{this.id}, .#{settings.controlClass}").on 'mouseleave', -> autoplay()
+      parent.on 'mouseenter', -> stopAutoplay()
+      parent.on 'mouseleave', -> autoplay()
 
       
