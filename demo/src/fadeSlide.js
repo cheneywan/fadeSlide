@@ -8,15 +8,16 @@
         speed: 'slow',
         interval: 3000,
         autoplay: true,
+        activeItemClass: "fs-active",
         navigation: true,
         navigationText: ["<", ">"],
         navigationClass: 'fs-navigation',
-        NextClass: 'fsNext',
-        PrevClass: 'fsPrev',
+        nextClass: 'fsNext',
+        prevClass: 'fsPrev',
         pagination: true,
         paginationNumbers: true,
         controlClass: 'fs-control',
-        ListClass: 'fs-list',
+        listClass: 'fs-list',
         listLiActiveClass: 'fs-active',
         listLiClass: 'fs-li'
       }, options);
@@ -57,18 +58,20 @@
         curNum = newIndex;
         jQslides.fadeOut(settings.speed);
         jQslides.eq(newIndex).fadeIn(settings.speed);
+        jQslides.removeClass(settings.activeItemClass);
+        jQslides.eq(curNum).addClass(settings.activeItemClass);
         if (settings.pagination) {
-          parent.find("." + settings.ListClass + " li").removeClass(settings.listLiActiveClass);
-          return parent.find("." + settings.ListClass + " li").eq(curNum).addClass(settings.listLiActiveClass);
+          parent.find("." + settings.listClass + " li").removeClass(settings.listLiActiveClass);
+          return parent.find("." + settings.listClass + " li").eq(curNum).addClass(settings.listLiActiveClass);
         }
       };
       if (settings.navigation) {
-        $(this).after("<a href='javascript:' class='" + settings.controlClass + " " + settings.navigationClass + " " + settings.NextClass + "'>" + settings.navigationText[1] + "</a>");
-        $(this).after("<a href='javascript:' class='" + settings.controlClass + " " + settings.navigationClass + " " + settings.PrevClass + "'>" + settings.navigationText[0] + "</a>");
-        parent.find("." + settings.NextClass).on("click", function() {
+        $(this).after("<a href='javascript:' class='" + settings.controlClass + " " + settings.navigationClass + " " + settings.nextClass + "'>" + settings.navigationText[1] + "</a>");
+        $(this).after("<a href='javascript:' class='" + settings.controlClass + " " + settings.navigationClass + " " + settings.prevClass + "'>" + settings.navigationText[0] + "</a>");
+        parent.find("." + settings.nextClass).on("click", function() {
           return jumpTo(++curNum);
         });
-        parent.find("." + settings.PrevClass).on("click", function() {
+        parent.find("." + settings.prevClass).on("click", function() {
           return jumpTo(--curNum);
         });
       }
@@ -87,11 +90,11 @@
           }
           i++;
         }
-        list = "<ul class='" + settings.controlClass + " " + settings.ListClass + "'>" + li + "</ul>";
+        list = "<ul class='" + settings.controlClass + " " + settings.listClass + "'>" + li + "</ul>";
         $(this).after(list);
-        parent.find("." + settings.ListClass + " a").on("click", function(e) {
+        parent.find("." + settings.listClass + " a").on("click", function(e) {
           var index;
-          index = parent.find("." + settings.ListClass + " a").index(this);
+          index = parent.find("." + settings.listClass + " a").index(this);
           if (index === curNum) {
             return;
           }
